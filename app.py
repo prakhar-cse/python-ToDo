@@ -1,16 +1,30 @@
 import sqlite3
 
-conn = sqlite3.connect("todo.db")
+# conn = sqlite3.connect("todo.db")
+# cursor = conn.cursor()
+# cursor.execute("""CREATE TABLE IF NOT EXISTS todos(
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     task TEXT NOT NULL,
+#     completed INTEGER DEFAULT 0
+# )""")
+# conn.commit()
+# conn.close()
+# print("Database is initialized")
 
-cursor = conn.cursor()
 
-cursor.execute("""CREATE TABLE IF NOT EXISTS todos(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    task TEXT NOT NULL,
-    completed INTEGER DEFAULT 0
-)""")
+def connect():
+    return sqlite3.connect("todo.db")
 
-conn.commit()
-conn.close()
+def add_task(task):
+    conn = connect()
+    cursor = conn.cursor()
 
-print("Database is initialized")
+    cursor.execute(
+        "INSERT INTO todos (task) VALUES (?)",
+        (task,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    print("Task is added")
