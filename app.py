@@ -16,7 +16,7 @@ def connect():
     return sqlite3.connect("todo.db")
 
 def add_task(task):
-    if task is not "":
+    if task != "":
         conn = connect()
         cursor = conn.cursor()
 
@@ -45,7 +45,21 @@ def get_all_tasks():
         status = "Done" if task[2] else "---"
         print(f"{task[0]},      {task[1]},      {status}")
 
+def mark_task_done(id):
+    conn = connect()
+    cursor = conn.cursor()
 
+    try:
+        cursor.execute('UPDATE todos SET completed = 1 WHERE id = ?',
+                       (id,))
+
+        conn.commit()
+        conn.close()
+        print(f"Task with id- {id} is completed")
+
+    except:
+        conn.close()
+        print(f"Task with id- {id} is not present")
 
 def main():
 
@@ -60,6 +74,10 @@ def main():
         elif choice == "2":
             task = input("Enter task- ")
             add_task(task)
+        elif choice == "3":
+            get_all_tasks()
+            task_id = input("Enter id of completed task: ")
+            mark_task_done(task_id)
         else:
             print("Closing todo app")
             break
