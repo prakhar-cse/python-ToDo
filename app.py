@@ -61,6 +61,22 @@ def mark_task_done(id):
         conn.close()
         print(f"Task with id- {id} is not present")
 
+def delete_task(id):
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+
+        cursor.execute('DELETE FROM todos WHERE id = ?'
+                    ,(id,))
+
+        conn.commit()
+        conn.close()
+        print("Deleted task with id: {id}")
+        get_all_tasks()
+    except:
+        print(f"Task with id- {id} is not present")
+
+
 def main():
 
     print("**********************************************")
@@ -68,6 +84,13 @@ def main():
     print("**********************************************")
 
     while True:
+        print("**********************************************")
+        print("1 for show all task")
+        print("2 for add new task")
+        print("3 for mark a task complete")
+        print("4 for deleting any task")
+        print("Press any other key for exit")
+        print("**********************************************")
         choice = input("Enter your action: ")
         if(choice == "1"):
             get_all_tasks()
@@ -78,6 +101,10 @@ def main():
             get_all_tasks()
             task_id = input("Enter id of completed task: ")
             mark_task_done(task_id)
+        elif choice == "4":
+            get_all_tasks()
+            task_id = input("Enter id for deleting task: ")
+            delete_task(task_id)
         else:
             print("Closing todo app")
             break
