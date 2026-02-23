@@ -15,6 +15,18 @@ import sqlite3
 def connect():
     return sqlite3.connect("todo.db")
 
+def check_task_with_id_exist(id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM todos WHERE id = ?',
+                   (id,))
+    
+    result = cursor.fetchone()
+
+    conn.close()
+
+    return result is not None
+
 def add_task(task):
     if task != "":
         conn = connect()
@@ -46,26 +58,23 @@ def get_all_tasks():
         print(f"{task[0]},      {task[1]},      {status}")
 
 def mark_task_done(id):
-    conn = connect()
-    cursor = conn.cursor()
 
-    try:
+    if check_task_with_id_exist(id):
+        conn = connect()
+        cursor = conn.cursor()
         cursor.execute('UPDATE todos SET completed = 1 WHERE id = ?',
                        (id,))
-
         conn.commit()
         conn.close()
         print(f"Task with id- {id} is completed")
 
-    except:
-        conn.close()
+    else:
         print(f"Task with id- {id} is not present")
 
 def delete_task(id):
-    try:
+    if check_task_with_id_exist(id):
         conn = connect()
         cursor = conn.cursor()
-
         cursor.execute('DELETE FROM todos WHERE id = ?'
                     ,(id,))
 
@@ -73,7 +82,7 @@ def delete_task(id):
         conn.close()
         print("Deleted task with id: {id}")
         get_all_tasks()
-    except:
+    else:
         print(f"Task with id- {id} is not present")
 
 
